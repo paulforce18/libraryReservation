@@ -9,15 +9,15 @@ const DB = process.env.DATABASE.replace(
 );
 
 mongoose
-  // .connect(process.env.DATABASE_LOCAl, {
-  .connect(DB, {
+  .connect(process.env.DATABASE_LOCAl, {
+    // .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
   })
   .then((con) => console.log("[SERVER]:DB connection sucessfully"));
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`app running on port: ${port}`);
 });
