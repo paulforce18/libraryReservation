@@ -5,6 +5,10 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  lower_title: {
+    type: String,
+    required: true,
+  },
   img: {
     type: String,
     required: true,

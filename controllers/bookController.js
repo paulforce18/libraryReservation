@@ -1,6 +1,7 @@
 const Book = require("./../models/bookModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const APIFeatures = require("./../utils/apiFeatures");
 
 exports.getAllBooks = catchAsync(async (req, res, next) => {
   // if (req.body.bookIdList) {
@@ -15,11 +16,18 @@ exports.getAllBooks = catchAsync(async (req, res, next) => {
   //     },
   //   });
   // }
+  const numberOfBooks = await Book.find();
+  const features = new APIFeatures(Book.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-  const books = await Book.find();
+  const books = await features.query;
+  // const books = await Book.find();
   res.status(200).json({
     status: "success",
-    results: books.length,
+    results: numberOfBooks.length,
     data: {
       books,
     },
@@ -53,7 +61,10 @@ exports.getBook = catchAsync(async (req, res, next) => {
 });
 
 exports.createBook = catchAsync(async (req, res, next) => {
-  const newBook = await Book.create(req.body);
+  const newBook = await Book.create({
+    lower_title: req.body.title.toLowerCase().split(" ").join(""),
+    ...req.body,
+  });
 
   res.status(201).json({
     status: "success",
