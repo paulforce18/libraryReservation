@@ -6,8 +6,16 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(bookController.createBook)
+  .post(
+    authController.protect,
+    authController.restrictTo("admin", "librarian"),
+    bookController.uploadBookPhoto,
+    bookController.resizeBookphoto,
+    bookController.createBook
+  )
   .get(authController.protect, bookController.getAllBooks);
+
+router.route("/images/:id").get(bookController.getBookImage);
 
 router
   .route("/:id")

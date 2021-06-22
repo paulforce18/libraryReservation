@@ -25,8 +25,15 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  numberOfCopies: {
+    type: Number,
+    required: true,
+  },
+  availableCopies: {
+    type: Number,
+    required: true,
+  },
   isbn: Number,
 });
-
 const Book = mongoose.model("Book", bookSchema);
 module.exports = Book;

@@ -13,7 +13,10 @@ class APIFeatures {
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    this.query = this.query.find(JSON.parse(queryStr));
+    queryObj.lower_title = new RegExp(queryObj.lower_title, "i");
+
+    this.query = this.query.find({ $or: [queryObj] });
+    // { $or:[ {'_id':objId}, {'name':param}, {'nickname':param} ]}
 
     return this;
   }

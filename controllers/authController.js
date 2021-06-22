@@ -17,6 +17,10 @@ exports.signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     role: req.body.role,
+    address: req.body.address,
+    mobileNumber: "09293828383",
+    studentNumber: "PDM-2018-000208",
+    course: "BSCS",
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
@@ -43,12 +47,6 @@ exports.login = catchAsync(async (req, res, next) => {
   // 2.) check if user exists and passsword is correct
   const user = await User.findOne({ email }).select("+password");
   const protectectedUser = await User.findOne({ email });
-
-  if (await user.correctPassword(password, user.password)) {
-    console.log("correct password");
-  } else {
-    console.log("wrong password");
-  }
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect password or email", 401));
@@ -186,6 +184,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
   //  3.)Update changedPasswordAt property for the user
   //  4.)Log the user in, send JWT
+  const token = signToken(user._id);
+  res.status(200).json({
+    status: "sucsess",
+    token,
+  });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // get user from collection
+  const user = await User.findById({ _id: req.body.id }).select("+password");
+
+  // check if POSTed current password is correct
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError("Incorrect password or email", 401));
+  }
+  // If so update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+
+  user.save();
+  // log the user in, send JWT
   const token = signToken(user._id);
   res.status(200).json({
     status: "sucsess",

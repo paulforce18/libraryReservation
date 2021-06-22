@@ -20,6 +20,22 @@ const userSchema = new mongoose.Schema({
     enum: ["student", "admin"],
     default: "student",
   },
+  course: {
+    type: String,
+    enum: ["BSCS", "BSIT", "BSHM", "BSTM"],
+  },
+  address: {
+    type: String,
+    required: [true, "please Provide a address"],
+  },
+  mobileNumber: {
+    type: String,
+    required: [true, "please Provide a mobile number"],
+  },
+  studentNumber: {
+    type: String,
+    required: [true, "please Provide a student number"],
+  },
   password: {
     type: String,
     required: [true, "Please provide a password"],
